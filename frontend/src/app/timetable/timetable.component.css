@@ -1,0 +1,37 @@
+#ipt_date{
+  border: black 1px solid;
+  height: 15px;
+  border-radius: 5px;
+  margin-right:3px;
+}
+#header_meetingroom{
+  background-color: whitesmoke;
+}
+#content_meetingroom{
+  background-color: whitesmoke;
+}
+#grd_timetable{
+}
+#span_reservCell{
+  background-color: lightpink;
+  margin-right: 3px;
+  border-radius: 10px;
+  float : left;
+}
+mat-grid-tile{
+  margin-right: 2px;
+  float:left;
+  child-align: left;
+  text-align: left;
+}
+mat-grid-list{
+  margin-bottom: 2px;
+}
+#btn_srch{
+  border : black 1px solid;
+  border-radius: 5px;
+  height: 20px;
+}
+#wrapper_srch{
+  margin : 0 0 20px 0;
+}

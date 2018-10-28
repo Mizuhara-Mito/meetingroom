@@ -1,0 +1,15 @@
+<h3> 예약현황 </h3>
+<div id="wrapper_srch">
+  <input id="ipt_date" [(ngModel)]="inputDate" placeholder="날짜를 입력해주세요." (keyup)="insertHipen()" maxlength="10">
+  <button id="btn_srch" (click)="retrieveReservInfoByDate()"> 조회 </button>
+</div>
+
+<mat-grid-list id="grd_timetable" *ngFor="let reservInfoByRoom of reservInfo; let idx = index" cols="5" rowHeight="4:1">
+  <mat-grid-tile [colspan]="1" id="header_meetingroom"> 회의실 {{rooms[idx].name}}</mat-grid-tile>
+  <mat-grid-tile [colspan]="4" id="content_meetingroom">
+    <span id="span_reservCell" *ngFor="let reservDetail of reservInfoByRoom">
+      {{reservDetail.sttTime}} - {{reservDetail.endTime}} <br/>
+      {{reservDetail.userName || '이름 없음'}}
+    </span>
+  </mat-grid-tile>
+</mat-grid-list>

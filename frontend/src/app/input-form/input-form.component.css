@@ -1,0 +1,18 @@
+.container{
+  margin : 40px 20px;
+}
+#btn_reserv, select {
+  border : black 1px solid;
+  border-radius: 5px;
+  height: 20px;
+}
+.wapper_input{
+  font-size : 14px;
+  margin-bottom: 3px;
+}
+.ipt_reserv{
+  margin-left : 10px;
+  border: black 1px solid;
+  height: 15px;
+  border-radius: 5px;
+}

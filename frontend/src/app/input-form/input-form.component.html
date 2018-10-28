@@ -1,0 +1,32 @@
+<div class="container">
+  <h3> 회의실 예약정보 입력 </h3>
+  <div class="wapper_input">
+    <span class="span_header">회의실 : </span>
+    <select [(ngModel)]="roomId">
+      <option *ngFor="let roomInfo of rooms" value="{{roomInfo.id}}">{{ roomInfo.name }}</option>
+    </select>
+  </div>
+  <div class="wapper_input">
+    <span class="span_header">예약일자 : </span>
+    <input class="ipt_reserv" [(ngModel)]="reservDt" (keyup)="insertHipenInDate()" maxlength="10">
+  </div>
+  <div class="wapper_input">
+    <span class="span_header">예약자명 : </span>
+    <input class="ipt_reserv" [(ngModel)]="userName">
+  </div>
+  <div class="wapper_input">
+    <span class="span_header">예약시간 : </span>
+    <input class="ipt_reserv" id="ipt_sttTime" placeholder="hhmm" [(ngModel)]="sttTime"
+           maxlength="4" (blur)="checkSttTimeValid()">
+    ~
+    <input class="ipt_reserv" id="ipt_endTime" placeholder="hhmm" [(ngModel)]="endTime"
+           maxlength="4" (blur)="checkEndTimeValid()" >
+  </div>
+  <div class="wapper_input">
+    <span class="span_header">반복하기 : </span>
+    <input class="ipt_reserv" value="0" (focus)="this.value = ''" [(ngModel)]="repeatNum"> 회 반복
+  </div>
+  <div class="wapper_input">
+    <button id="btn_reserv" (click)="addReservation()">예약하기</button>
+  </div>
+</div>
