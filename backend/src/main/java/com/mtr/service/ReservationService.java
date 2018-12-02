@@ -26,7 +26,7 @@ public class ReservationService {
     private final static int ADD_DAY = 7;
     private final static String DUPLICATED_MSG = "중복 예약입니다.";
     private final static String RESERVE_MSG = "예약에 성공하였습니다";
-    private List<SystemMessage> messages = new ArrayList<>();
+    private List<SystemMessage> messages;
 
     private final ReservationRepository reservationRepository;
     private final RoomRepository roomRepository;
@@ -52,13 +52,28 @@ public class ReservationService {
      * @param 기준날짜
      * @return 예약정보 List
      */
-    public List<Reservation> retrieveReservation(String reservDt) throws java.text.ParseException {
-        logger.info("=============================> RESERVATION DATE : {}", reservDt);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date date = sdf.parse(reservDt);
-        java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        return reservationRepository.findByReservDtOrderBySttTimeAsc(sqlStartDate);
+    public List<Reservation> retrieveReservation(String reservDt) {
+
+        try {
+            logger.info("=============================> RESERVATION DATE : {}", reservDt);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date date = sdf.parse(reservDt);
+            java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+            return reservationRepository.findByReservDtOrderBySttTimeAsc(sqlStartDate);
+        } catch (Exception ex){
+            throw new ReservationRuntimeException("날짜 형식이 잘못되었습니다.");
+        }
     }
+
+    /**
+     *
+     * @param 회의실별 예약정보 받기
+     * @param reservDt, roomName
+     * @return 회의실별 예약정보 List
+     */
+/*    public List<Reservation> retreiveReservationByRoom(String reservDt, String roomName) {
+
+    }*/
 
     /**
      * @desc 단건 or 다건(반복) 예약을 하여 예약건별로 성공 실패 메세지를 담은 메세지 객체의 리스트를 리턴함
@@ -84,17 +99,25 @@ public class ReservationService {
      * @param 예약정보
      */
     public void doReservation(Reservation reservation) throws Exception {
+        messages = new ArrayList<SystemMessage>();
+
         logger.info("=============================> USER NAME : {}", reservation.getUserName());
+        logger.info("============================> RESERVE DATE : {}", reservation.getReservDt());
+        logger.info("============================> RESERVE ENDTIME : {}", reservation.getEndTime());
+        logger.info("============================> RESERVE START TIME : {}", reservation.getSttTime());
+        logger.info("============================> RESERVE ROOM : {}", reservation.getRoom());
+
         Reservation reserv = new Reservation(reservation.getSttTime()
                 ,reservation.getReservDt()
                 ,reservation.getEndTime()
                 ,reservation.getUserName()
-                ,reservation.getRoomId()
+                ,reservation.getRoom()
         );
 
         if(isDuplicatedReservation(reserv)){
             messages.add(new SystemMessage( reserv.getReservDt(), DUPLICATED_MSG ));
         } else {
+            reservationRepository.save(reserv);
             messages.add(new SystemMessage( reserv.getReservDt(), RESERVE_MSG ));
         }
     }
@@ -106,9 +129,9 @@ public class ReservationService {
      */
     public boolean isDuplicatedReservation(Reservation reservation) throws Exception {
         int sttTimeDuplCnt = reservationRepository.findByReservDtAndRoomIdAndSttTimeLessThanAndSttTimeGreaterThan(
-                reservation.getReservDt(), reservation.getRoomId(), reservation.getEndTime(), reservation.getSttTime() ).size();
+                reservation.getReservDt(), reservation.getRoom().getRoomId(), reservation.getEndTime(), reservation.getSttTime() ).size();
         int endTimeDuplCnt = reservationRepository.findByReservDtAndRoomIdAndEndTimeLessThanAndEndTimeGreaterThan(
-                reservation.getReservDt(), reservation.getRoomId(), reservation.getEndTime(), reservation.getSttTime() ).size();
+                reservation.getReservDt(), reservation.getRoom().getRoomId(), reservation.getEndTime(), reservation.getSttTime() ).size();
 
         if(sttTimeDuplCnt > 0 || endTimeDuplCnt > 0){
             return true;

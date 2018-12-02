@@ -13,6 +13,10 @@ public class Reservation implements Serializable {
     @Column(name="reserv_id", length = 10)
     int reservId;
 
+    @ManyToOne
+    @JoinColumn(name="room_id", insertable = false)
+    private Room room;
+
     @Column(name="stt_time", length = 4)
     String sttTime;
 
@@ -25,18 +29,23 @@ public class Reservation implements Serializable {
     @Column(name="user_name")
     String userName;
 
-    @Column(name="room_id", length = 10)
-    int roomId;
-
     @Column(name="repeat_num", length = 2)
     int repeatNum;
 
-    public Reservation(String sttTime, Date reservDt, String endTime, String userName, int roomId) {
+    public Reservation(String sttTime, Date reservDt, String endTime, String userName, Room room) {
         this.sttTime = sttTime;
         this.reservDt = reservDt;
         this.endTime = endTime;
         this.userName = userName;
-        this.roomId = roomId;
+        this.room = room;
+    }
+
+    public void setRoom(Room room){
+        this.room = room;
+    }
+
+    public Room getRoom(){
+        return this.room;
     }
 
     public Reservation(){};
@@ -79,14 +88,6 @@ public class Reservation implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public int getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
     }
 
     public int getRepeatNum() {

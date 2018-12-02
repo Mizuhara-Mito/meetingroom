@@ -8,7 +8,10 @@ public class Room {
 
     @Id
     @GeneratedValue
-    private int id;
+    @Column(name="room_id", length = 10, nullable = false)
+    private int roomId;
+
+    public Room(){};
 
     public Room(String name) {
         this.name = name;
@@ -18,11 +21,11 @@ public class Room {
     private String name;
 
     public int getId() {
-        return id;
+        return roomId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int roomId) {
+        this.roomId = roomId;
     }
 
     public String getName() {
@@ -31,5 +34,9 @@ public class Room {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getRoomId(){
+        return this.roomId;
     }
 }

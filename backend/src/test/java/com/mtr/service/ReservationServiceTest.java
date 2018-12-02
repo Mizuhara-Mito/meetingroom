@@ -11,16 +11,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ReservationServiceTest {
 
     @Mock
@@ -37,12 +35,17 @@ public class ReservationServiceTest {
         reservationService = new ReservationService(reservationRepository, roomRepository);
     }
 
+    @Test(expected = ReservationRuntimeException.class)
+    public void testRetrieveReservationException() throws Exception{
+        assertThat(reservationService.retrieveReservation("aa")).isEqualTo("날짜 형식이 잘못되었습니다.");
+    }
+
     @Test
-    public void doReservationTest() throws Exception {
+    public void testDoReservation() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = sdf.parse("2018-07-01");
         java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        Reservation reservation = new Reservation("1100", sqlStartDate, "12:00", "홍길동", 1);
+        Reservation reservation = new Reservation("1100", sqlStartDate, "12:00", "홍길동", new Room("A"));
         List<SystemMessage> messageList = new ArrayList<>();
         messageList.add(new SystemMessage(sqlStartDate,"예약에 성공하였습니다"));
         given(reservationRepository.save(reservation)).willReturn(reservation);
@@ -56,7 +59,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void retrieveRoomsTest() throws Exception {
+    public void testRetrieveRooms() throws Exception {
         //given
         List<Room> roomList = new ArrayList<>();
         roomList.add(new Room("A"));
@@ -73,13 +76,13 @@ public class ReservationServiceTest {
     }
 
     @Test
-    public void retrieveReserveInfo() throws Exception {
+    public void testRetrieveReserveInfo() throws Exception {
         //given
         List<Reservation> reservations = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = sdf.parse("2018-07-01");
         java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        Reservation reservation = new Reservation("1100", sqlStartDate, "12:00", "홍길동", 1);
+        Reservation reservation = new Reservation("1100", sqlStartDate, "1200", "홍길동", new Room("A"));
         reservations.add(reservation);
         given(reservationRepository.findByReservDtOrderBySttTimeAsc(sqlStartDate)).willReturn(reservations);
 
@@ -90,5 +93,4 @@ public class ReservationServiceTest {
         assertThat(reservation1).isNotNull();
         assertThat(reservation1.getUserName()).isEqualTo("홍길동");
     }
-
 }

@@ -1,5 +1,6 @@
 package com.mtr.Repository;
 
+import com.mtr.domain.Reservation;
 import com.mtr.domain.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 
